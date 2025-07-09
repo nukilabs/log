@@ -13,7 +13,7 @@ func WithContext(ctx context.Context, logger *Logger) context.Context {
 func FromContext(ctx context.Context) *Logger {
 	logger, ok := ctx.Value(ContextKey).(*Logger)
 	if !ok {
-		return nil
+		return Default()
 	}
 	return logger
 }
