@@ -104,6 +104,11 @@ func New(w io.Writer, opts ...Option) *Logger {
 	return l
 }
 
+// SetLevel sets the logging level for the logger.
+func (l *Logger) SetLevel(level Level) {
+	atomic.StoreInt64(&l.level, int64(level))
+}
+
 // Log logs a message with the given level and key-value pairs.
 func (l *Logger) Log(level Level, msg any, keyvals ...any) {
 	var kvs []any

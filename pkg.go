@@ -21,6 +21,10 @@ func SetDefault(logger *Logger) {
 	defaultLogger.Store(logger)
 }
 
+func SetLevel(level Level) {
+	Default().SetLevel(level)
+}
+
 // Debug logs a debug message with the given key-value pairs.
 func Debug(msg any, keyvals ...any) {
 	Default().Log(DebugLevel, msg, keyvals...)
