@@ -2,6 +2,7 @@ package log
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"sync"
@@ -109,6 +110,11 @@ func (l *Logger) SetLevel(level Level) {
 	atomic.StoreInt64(&l.level, int64(level))
 }
 
+// Logf logs a message with formatting.
+func (l *Logger) Logf(level Level, format string, args ...any) {
+	l.Log(level, fmt.Sprintf(format, args...))
+}
+
 // Log logs a message with the given level and key-value pairs.
 func (l *Logger) Log(level Level, msg any, keyvals ...any) {
 	var kvs []any
@@ -189,4 +195,50 @@ func (l *Logger) Fatal(msg any, keyvals ...any) {
 // Print logs a message without a level and with the given key-value pairs.
 func (l *Logger) Print(msg any, keyvals ...any) {
 	l.Log(noLevel, msg, keyvals...)
+}
+
+// Debugf prints a debug message with formatting.
+func (l *Logger) Debugf(format string, args ...any) {
+	l.Log(DebugLevel, fmt.Sprintf(format, args...))
+}
+
+// Hintf prints a hint message with formatting.
+func (l *Logger) Hintf(format string, args ...any) {
+	l.Log(HintLevel, fmt.Sprintf(format, args...))
+}
+
+// Infof prints an info message with formatting.
+func (l *Logger) Infof(format string, args ...any) {
+	l.Log(InfoLevel, fmt.Sprintf(format, args...))
+}
+
+// Warnf prints a warning message with formatting.
+func (l *Logger) Warnf(format string, args ...any) {
+	l.Log(WarnLevel, fmt.Sprintf(format, args...))
+}
+
+// Cartf prints a cart message with formatting.
+func (l *Logger) Cartf(format string, args ...any) {
+	l.Log(CartLevel, fmt.Sprintf(format, args...))
+}
+
+// Missf prints a miss message with formatting.
+func (l *Logger) Missf(format string, args ...any) {
+	l.Log(MissLevel, fmt.Sprintf(format, args...))
+}
+
+// Errorf prints an error message with formatting.
+func (l *Logger) Errorf(format string, args ...any) {
+	l.Log(ErrorLevel, fmt.Sprintf(format, args...))
+}
+
+// Donef prints a done message with formatting.
+func (l *Logger) Donef(format string, args ...any) {
+	l.Log(DoneLevel, fmt.Sprintf(format, args...))
+}
+
+// Fatalf prints a fatal message with formatting and exits the program.
+func (l *Logger) Fatalf(format string, args ...any) {
+	l.Log(FatalLevel, fmt.Sprintf(format, args...))
+	os.Exit(1)
 }
