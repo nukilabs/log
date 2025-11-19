@@ -27,9 +27,9 @@ func (l *Logger) writeIndent(w io.Writer, str string, indent string, newline boo
 				_, _ = w.Write([]byte(indent))
 				val := escapeStringForOutput(str, false)
 				if valueStyle, ok := st.Values[key]; ok {
-					val = valueStyle.Renderer(l.re).Render(val)
+					val = valueStyle.Render(val)
 				} else {
-					val = st.Value.Renderer(l.re).Render(val)
+					val = st.Value.Render(val)
 				}
 				_, _ = w.Write([]byte(val))
 				if newline {
@@ -41,7 +41,7 @@ func (l *Logger) writeIndent(w io.Writer, str string, indent string, newline boo
 
 		_, _ = w.Write([]byte(indent))
 		val := escapeStringForOutput(str[:nl], false)
-		val = st.Value.Renderer(l.re).Render(val)
+		val = st.Value.Render(val)
 		_, _ = w.Write([]byte(val))
 		_, _ = w.Write([]byte{'\n'})
 		str = str[nl+1:]
@@ -177,13 +177,13 @@ func (l *Logger) formatter(keyvals ...any) {
 		case TimestampKey:
 			if t, ok := keyvals[i+1].(time.Time); ok {
 				ts := t.Format(l.timeFormat)
-				ts = st.Timestamp.Renderer(l.re).Render(ts)
+				ts = st.Timestamp.Render(ts)
 				writeSpace(&l.b, firstKey)
 				l.b.WriteString(ts)
 			}
 		case IndexKey:
 			if idx, ok := keyvals[i+1].(int); ok {
-				index := st.Index.Renderer(l.re).Render("[" + strconv.Itoa(idx) + "]")
+				index := st.Index.Render("[" + strconv.Itoa(idx) + "]")
 				writeSpace(&l.b, firstKey)
 				l.b.WriteString(index)
 			}
@@ -195,7 +195,7 @@ func (l *Logger) formatter(keyvals ...any) {
 					continue
 				}
 
-				lvl = lvlStyle.Renderer(l.re).String()
+				lvl = lvlStyle.String()
 				if lvl != "" {
 					writeSpace(&l.b, firstKey)
 					l.b.WriteString(lvl)
@@ -203,22 +203,22 @@ func (l *Logger) formatter(keyvals ...any) {
 			}
 		case PrefixKey:
 			if prefix, ok := keyvals[i+1].(string); ok {
-				prefix = st.Prefix.Renderer(l.re).Render(prefix + ":")
+				prefix = st.Prefix.Render(prefix + ":")
 				writeSpace(&l.b, firstKey)
 				l.b.WriteString(prefix)
 			}
 		case MessageKey:
 			if msg := keyvals[i+1]; msg != nil {
 				m := fmt.Sprint(msg)
-				m = st.Message.Renderer(l.re).Render(m)
+				m = st.Message.Render(m)
 				writeSpace(&l.b, firstKey)
 				l.b.WriteString(m)
 			}
 		default:
 			sep := separator
 			indentSep := indentSeparator
-			sep = st.Separator.Renderer(l.re).Render(sep)
-			indentSep = st.Separator.Renderer(l.re).Render(indentSep)
+			sep = st.Separator.Render(sep)
+			indentSep = st.Separator.Render(indentSep)
 			key := fmt.Sprint(keyvals[i])
 			val := fmt.Sprintf("%+v", keyvals[i+1])
 			raw := val == ""
@@ -234,9 +234,9 @@ func (l *Logger) formatter(keyvals ...any) {
 				valueStyle = vs
 			}
 			if keyStyle, ok := st.Keys[key]; ok {
-				key = keyStyle.Renderer(l.re).Render(key)
+				key = keyStyle.Render(key)
 			} else {
-				key = st.Key.Renderer(l.re).Render(key)
+				key = st.Key.Render(key)
 			}
 
 			// Values may contain multiple lines, and that format
@@ -255,10 +255,10 @@ func (l *Logger) formatter(keyvals ...any) {
 				writeSpace(&l.b, firstKey)
 				l.b.WriteString(key)
 				l.b.WriteString(sep)
-				l.b.WriteString(valueStyle.Renderer(l.re).Render(fmt.Sprintf(`"%s"`,
+				l.b.WriteString(valueStyle.Render(fmt.Sprintf(`"%s"`,
 					escapeStringForOutput(val, true))))
 			} else {
-				val = valueStyle.Renderer(l.re).Render(val)
+				val = valueStyle.Render(val)
 				writeSpace(&l.b, firstKey)
 				l.b.WriteString(key)
 				l.b.WriteString(sep)

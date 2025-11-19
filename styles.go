@@ -3,7 +3,7 @@ package log
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/lipgloss/v2"
 )
 
 // Styles defines the styles for the text logger.

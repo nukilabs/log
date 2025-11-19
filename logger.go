@@ -8,9 +8,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/termenv"
 )
 
 var (
@@ -68,7 +65,6 @@ type Logger struct {
 	w  io.Writer
 	b  bytes.Buffer
 	mu *sync.RWMutex
-	re *lipgloss.Renderer
 
 	idx        int
 	level      int64
@@ -76,8 +72,6 @@ type Logger struct {
 	timeFormat string
 	styles     *Styles
 }
-
-var registry sync.Map
 
 // New creates a new Logger with the given options.
 func New(w io.Writer, opts ...Option) *Logger {
@@ -89,13 +83,6 @@ func New(w io.Writer, opts ...Option) *Logger {
 		prefix:     "",
 		timeFormat: time.TimeOnly,
 		styles:     DefaultStyles(),
-	}
-
-	if v, ok := registry.Load(w); ok {
-		l.re = v.(*lipgloss.Renderer)
-	} else {
-		l.re = lipgloss.NewRenderer(w, termenv.WithColorCache(true))
-		registry.Store(w, l.re)
 	}
 
 	for _, opt := range opts {
