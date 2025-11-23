@@ -97,6 +97,48 @@ func (l *Logger) SetLevel(level Level) {
 	atomic.StoreInt64(&l.level, int64(level))
 }
 
+// SetIndex sets the index for the logger.
+func (l *Logger) SetIndex(idx int) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.idx = idx
+}
+
+// SetPrefix sets the prefix for the logger.
+func (l *Logger) SetPrefix(prefix string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.prefix = prefix
+}
+
+// SetTimeFormat sets the time format for the logger.
+func (l *Logger) SetTimeFormat(format string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.timeFormat = format
+}
+
+// SetStyles sets the styles for the logger.
+func (l *Logger) SetStyles(styles *Styles) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.styles = styles
+}
+
+// WithPrefix returns a new Logger with the given prefix.
+func (l *Logger) WithPrefix(prefix string) *Logger {
+	var st Styles
+	l.mu.Lock()
+	sl := *l
+	st = *l.styles
+	l.mu.Unlock()
+	sl.b = bytes.Buffer{}
+	sl.mu = &sync.RWMutex{}
+	sl.styles = &st
+	sl.SetPrefix(prefix)
+	return &sl
+}
+
 // Logf logs a message with formatting.
 func (l *Logger) Logf(level Level, format string, args ...any) {
 	l.Log(level, fmt.Sprintf(format, args...))
