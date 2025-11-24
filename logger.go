@@ -8,6 +8,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"charm.land/lipgloss/v2"
 )
 
 var (
@@ -123,6 +125,20 @@ func (l *Logger) SetStyles(styles *Styles) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.styles = styles
+}
+
+// SetKeyStyle sets the style for a specific key.
+func (l *Logger) SetKeyStyle(key string, style lipgloss.Style) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.styles.Keys[key] = style
+}
+
+// SetValueStyle sets the style for a specific value.
+func (l *Logger) SetValueStyle(key string, style lipgloss.Style) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.styles.Values[key] = style
 }
 
 // WithPrefix returns a new Logger with the given prefix.
