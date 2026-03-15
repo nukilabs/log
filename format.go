@@ -33,7 +33,7 @@ func (l *Logger) writeIndent(w io.Writer, str string, indent string, newline boo
 				}
 				_, _ = w.Write([]byte(val))
 				if newline {
-					_, _ = w.Write([]byte{'\n'})
+					_, _ = w.Write([]byte("\r\n"))
 				}
 			}
 			return
@@ -43,7 +43,7 @@ func (l *Logger) writeIndent(w io.Writer, str string, indent string, newline boo
 		val := escapeStringForOutput(str[:nl], false)
 		val = st.Value.Render(val)
 		_, _ = w.Write([]byte(val))
-		_, _ = w.Write([]byte{'\n'})
+		_, _ = w.Write([]byte("\r\n"))
 		str = str[nl+1:]
 	}
 }
@@ -247,9 +247,9 @@ func (l *Logger) formatter(keyvals ...any) {
 			// in the value string are "normal", like if they
 			// contain ANSI escape sequences.
 			if strings.Contains(val, "\n") {
-				l.b.WriteString("\n  ")
+				l.b.WriteString("\r\n  ")
 				l.b.WriteString(key)
-				l.b.WriteString(sep + "\n")
+				l.b.WriteString(sep + "\r\n")
 				l.writeIndent(&l.b, val, indentSep, moreKeys, actualKey)
 			} else if !raw && needsQuoting(val) {
 				writeSpace(&l.b, firstKey)
@@ -268,5 +268,5 @@ func (l *Logger) formatter(keyvals ...any) {
 	}
 
 	// Add a newline to the end of the log message.
-	l.b.WriteByte('\n')
+	l.b.WriteString("\r\n")
 }
